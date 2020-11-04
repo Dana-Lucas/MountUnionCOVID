@@ -37,7 +37,7 @@ caseList = []
 
 # use RegEx to strip the date from other text (As of/time, etc), first digit 
 # is optional, so for example 07/25/20 and 7/25/20 will both work
-stripDate = re.compile('\d?\d\/\d\d\/\d\d')
+stripDate = re.compile('\d?\d\/\d\d?\/\d\d')
 strippedDate = stripDate.search(date[0].text)
 
 # Add the data to the list of current data (which is currently empty)
@@ -108,15 +108,19 @@ dateRange = pd.date_range(start=dateList[0], end=dateList[-1], periods=6)
 plt.plot(dateList,activeList,'r',label='Active Cases')
 plt.plot(dateList,recoveredList,'g',label='Recovered Cases')
 plt.plot(dateList,totalList,'b',label='Total Cases')
+plt.plot(dateList[-1],activeList[-1],'ms',mfc='none',markersize=7)
+# plt.plot([dateList[0],dateList[-1]],[activeList[-1],activeList[-1]],'m--',markersize=1)
 
 # Add legend, titles, labels
 plt.legend(loc = 2) # add location
 plt.title('COVID Cases at Mount Union')
 plt.xlabel('Date')
 plt.ylabel('Number of Cases')
+
 ## Add: Adjust x axis markers to show only last two digits of the year
 ## Add: Put circle marker on most recent data and put label specifying the number
 plt.xticks(dateRange,rotation = 45)
+plt.text(dateList[-1],activeList[-1]+3,activeList[-1])
 plt.subplots_adjust(left=None, bottom=0.225, right=None, top=0.92, wspace=None, hspace=None)
 
 plt.show()
