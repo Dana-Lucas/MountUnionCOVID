@@ -110,6 +110,7 @@ plt.plot(dateList,recoveredList,'g',label='Recovered Cases')
 plt.plot(dateList,totalList,'b',label='Total Cases')
 plt.plot(dateList[-1],activeList[-1],'ms',mfc='none',markersize=7)
 # plt.plot([dateList[0],dateList[-1]],[activeList[-1],activeList[-1]],'m--',markersize=1)
+## Add line for when random testing started - Oct 26
 
 # Add legend, titles, labels
 plt.legend(loc = 2) # add location
@@ -118,7 +119,6 @@ plt.xlabel('Date')
 plt.ylabel('Number of Cases')
 
 ## Add: Adjust x axis markers to show only last two digits of the year
-## Add: Put circle marker on most recent data and put label specifying the number
 plt.xticks(dateRange,rotation = 45)
 plt.text(dateList[-1],activeList[-1]+3,activeList[-1])
 plt.subplots_adjust(left=None, bottom=0.225, right=None, top=0.92, wspace=None, hspace=None)
