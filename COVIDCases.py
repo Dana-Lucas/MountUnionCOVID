@@ -45,11 +45,7 @@ caseList.append(strippedDate[0])
 
 # Finish writing the list showing [date,active,recovered,total] altogether
 for i in cases:
-    c = int(i.text.strip())
-    caseList.append(c)
-
-# Take note of the newest total case value which just happens to be the last part of the for loop; needed for later calculation
-newTotal = c
+    caseList.append(int(i.text.strip()))
 
 '''This section checks to see if the data in caseList (the list of current data)
 is already in the data text file. If it isn't, add it
@@ -99,13 +95,13 @@ for line in g:
         activeList.append(int(s[1]))
         recoveredList.append(int(s[2]))
         totalList.append(int(s[3]))
-        # newList.append(int(s[4]))
     
     # Calculate new cases
     if len(dateList) > 1:
         newList.append(totalList[-1]-totalList[-2])
     else:
         newList.append(0)  # To ensure the lists have the same length for plotting
+        
 g.close()
 
 ## Create the graph
@@ -123,7 +119,6 @@ plt.plot(dateList,recoveredList,'g',label='Recovered Cases')
 plt.plot(dateList,totalList,'b',label='Total Cases')
 plt.plot(dateList,newList,'y',label='New Cases')
 plt.plot(dateList[-1],activeList[-1],'ms',mfc='none',markersize=7)
-# plt.plot([dateList[0],dateList[-1]],[activeList[-1],activeList[-1]],'m--',markersize=1)
 ## Add: line for when random testing started - Oct 26
 
 # Add legend, titles, labels
