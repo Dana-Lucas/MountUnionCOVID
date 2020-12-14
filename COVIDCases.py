@@ -49,6 +49,7 @@ for i in cases:
     caseList.append(c)
 
 # Take note of the newest total case value which just happens to be the last part of the for loop; needed for later calculation
+newTotal = c
 
 '''This section checks to see if the data in caseList (the list of current data)
 is already in the data text file. If it isn't, add it
