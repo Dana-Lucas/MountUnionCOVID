@@ -127,3 +127,6 @@ plt.show()
 
 # This just prints the most recent data from the website into the console
 print(caseList) #date,active,recovered,total
+
+
+# Trying to update
