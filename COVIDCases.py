@@ -82,6 +82,7 @@ activeList = []
 recoveredList = []
 totalList = []
 newList = []
+newRecoveredList = []
 g = open('COVIDCases.txt')
 for line in g:
     s = line.split()
@@ -99,8 +100,10 @@ for line in g:
     # Calculate new cases
     if len(dateList) > 1:
         newList.append(totalList[-1]-totalList[-2])
+        newRecoveredList.append(recoveredList[-1]-recoveredList[-2])
     else:
         newList.append(0)  # To ensure the lists have the same length for plotting
+        newRecoveredList.append(0)
         
 g.close()
 
@@ -117,7 +120,8 @@ dateRange = pd.date_range(start=dateList[0], end=dateList[-1], periods=6)
 plt.plot(dateList,activeList,'r',label='Active Cases')
 plt.plot(dateList,recoveredList,'g',label='Recovered Cases')
 plt.plot(dateList,totalList,'b',label='Total Cases')
-plt.plot(dateList,newList,'y',label='New Cases')
+plt.plot(dateList,newList,'m',label='New Active Cases')
+plt.plot(dateList,newRecoveredList,'y',label='New Recovered Cases')
 plt.plot(dateList[-1],activeList[-1],'ms',mfc='none',markersize=7)
 ## Add: line for when random testing started - Oct 26
 
@@ -128,7 +132,7 @@ plt.xlabel('Date')
 plt.ylabel('Number of Cases')
 
 ## Add: Adjust x axis markers to show only last two digits of the year
-## Add: Adjust dates that show to show beginning of each month or whatever, something consistent, just to make it nicer
+## Add: Adjust dates that show beginning of each month or whatever, something consistent, just to make it nicer
 plt.xticks(dateRange,rotation = 45)
 plt.text(dateList[-1],activeList[-1]+6,activeList[-1])
 plt.subplots_adjust(left=None, bottom=0.225, right=None, top=0.92, wspace=None, hspace=None)
