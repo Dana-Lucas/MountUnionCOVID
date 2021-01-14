@@ -21,67 +21,6 @@ import matplotlib.patches as mpatches
 import tkinter as tk
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,NavigationToolbar2Tk) 
 
-def CheckForNewData():
-    
-    '''
-    This section extracts the current data from the webpage and correctly formats it
-    into a list called caseList in the form of [date,active,recovered,total]
-    '''
-    # Go to the webpage specified by URL
-    res = requests.get('https://www.mountunion.edu/covid-19-cases-reporting')
-    res.raise_for_status()
-    soup = bs4.BeautifulSoup(res.text, 'html.parser')
-    
-    # Find the data values on the webpage that are needed
-    date = soup.select('#content > section.pad-4-b.pad-5-b-lg-up > div > div > div > section > div > ul > li:nth-child(1) > div > p > i')
-    cases = soup.find_all(style="font-size: 60px")
-    
-    # Create a list and save the date and three case values to the list
-    caseList = []
-    # This last part just cleans up the string so the date is the only thing appended
-    # caseList.append(date[0].text.strip('As of ')) 
-    
-    # use RegEx to strip the date from other text (As of/time, etc), first digit 
-    # is optional, so for example 07/25/20 and 7/25/20 will both work
-    stripDate = re.compile('\d?\d\/\d\d?\/\d\d\d\d')
-    strippedDate = stripDate.search(date[0].text)
-    
-    # Add the data to the list of current data (which is currently empty)
-    caseList.append(strippedDate[0])
-    
-    # Finish writing the list showing [date,active,recovered,total] altogether
-    for VALUE in cases:
-        caseList.append(int(VALUE.text.strip()))
-    
-    '''This section checks to see if the data in caseList (the list of current data)
-    is already in the data text file. If it isn't, add it
-    '''
-    
-    # Open the text file and paste the latest value of the list into there   
-    READ_COVID_FILE = open('COVIDCases.txt','r') # To read the file
-    APPEND_COVID_FILE = open('COVIDCases.txt','a') # To append new data to the file
-    writeData = 0
-    
-    # Figure out if this line is already in the file; if so, writeData is turned to 'true' and loop is exited
-    for CHECK_LINE in READ_COVID_FILE:
-        CHECK_LINE = CHECK_LINE.split()
-        if CHECK_LINE != []: # Allows it to run if there is an empty space in the file
-            if CHECK_LINE[0] == caseList[0]: # If data for this date is already written in the txt file...
-                writeData = 1
-                break
-    
-    # If not, write the data
-    if writeData == 0:
-        APPEND_COVID_FILE.write('\n'+str(caseList[0])+'\t'+str(caseList[1])+'\t'+str(caseList[2])+'\t'+str(caseList[3])+'\t')
-        
-    # Close the files; we don't need them anymore    
-    READ_COVID_FILE.close()
-    APPEND_COVID_FILE.close()
-    
-    return caseList
-
-caseList = CheckForNewData()
-
 def CreateMasterLists():
     '''
     This section creates and displays plots of the data
@@ -157,6 +96,73 @@ def CreateMasterLists():
 
 dateList,activeList,recoveredList,totalList,ACCUMULATED_TOTAL,ACCUMULATED_RECOVERED,ALL_TIME_DATE_RANGE = CreateMasterLists()
 
+
+
+'''Check For New Data'''
+def check_for_data():
+    '''
+    This section extracts the current data from the webpage and correctly formats it
+    into a list called caseList in the form of [date,active,recovered,total]
+    '''
+    # Go to the webpage specified by URL
+    res = requests.get('https://www.mountunion.edu/covid-19-cases-reporting')
+    res.raise_for_status()
+    soup = bs4.BeautifulSoup(res.text, 'html.parser')
+    
+    # Find the data values on the webpage that are needed
+    date = soup.select('#content > section.pad-4-b.pad-5-b-lg-up > div > div > div > section > div > ul > li:nth-child(1) > div > p > i')
+    cases = soup.find_all(style="font-size: 60px")
+    
+    # Create a list and save the date and three case values to the list
+    caseList = []
+    # This last part just cleans up the string so the date is the only thing appended
+    # caseList.append(date[0].text.strip('As of ')) 
+    
+    # use RegEx to strip the date from other text (As of/time, etc), first digit 
+    # is optional, so for example 07/25/20 and 7/25/20 will both work
+    stripDate = re.compile('\d?\d\/\d\d?\/\d\d\d\d')
+    strippedDate = stripDate.search(date[0].text)
+    
+    # Add the data to the list of current data (which is currently empty)
+    caseList.append(strippedDate[0])
+    
+    # Finish writing the list showing [date,active,recovered,total] altogether
+    for VALUE in cases:
+        caseList.append(int(VALUE.text.strip()))
+    
+    '''This section checks to see if the data in caseList (the list of current data)
+    is already in the data text file. If it isn't, add it
+    '''
+    
+    # Open the text file and paste the latest value of the list into there   
+    READ_COVID_FILE = open('COVIDCases.txt','r') # To read the file
+    APPEND_COVID_FILE = open('COVIDCases.txt','a') # To append new data to the file
+    writeData = 0
+    
+    # Figure out if this line is already in the file; if so, writeData is turned to 'true' and loop is exited
+    for CHECK_LINE in READ_COVID_FILE:
+        CHECK_LINE = CHECK_LINE.split()
+        if CHECK_LINE != []: # Allows it to run if there is an empty space in the file
+            if CHECK_LINE[0] == caseList[0]: # If data for this date is already written in the txt file...
+                writeData = 1
+                break
+    
+    # If not, write the data
+    if writeData == 0:
+        APPEND_COVID_FILE.write('\n'+str(caseList[0])+'\t'+str(caseList[1])+'\t'+str(caseList[2])+'\t'+str(caseList[3])+'\t')
+        
+    # Close the files; we don't need them anymore    
+    READ_COVID_FILE.close()
+    APPEND_COVID_FILE.close()
+    
+    # This just prints the most recent data from the website into the console, formatted nicely
+    activeSuffix = 's' if caseList[1] != 1 else ''
+    recoveredSuffix = 's' if caseList[2] != 1 else ''
+    # print(f'On {caseList[0]}, there were {caseList[1]} active case{activeSuffix}, {caseList[2]} recovered case{recoveredSuffix}, and {caseList[3]} total cases.') #date,active,recovered,total
+    label_text = f'On {caseList[0]}, there were {caseList[1]} active case{activeSuffix}, {caseList[2]} recovered case{recoveredSuffix}, and {caseList[3]} total cases.'
+    create_label(label_text)
+    CreateMasterLists()
+
 class SemesterData: 
     def __init__(self,file,name,start,end):
         self.name = name
@@ -207,7 +213,7 @@ class SemesterData:
             self.DATE_RANGE = pd.date_range(start=self.DATE_LIST[0], end=self.DATE_LIST[-1], periods=len(self.DATE_LIST))
         return self.DATE_RANGE
     def graph_data(self):
-        plt.figure(dpi=100)
+        fig = plt.figure(dpi=100)
         plt.plot(self.DATE_LIST,self.ACTIVE_LIST,'r',label='Active Cases')
         plt.plot(self.DATE_LIST,self.RECOVERED_LIST,'g',label='Recovered Cases')
         plt.plot(self.DATE_LIST,self.TOTAL_LIST,'b',label='Total Cases')
@@ -227,6 +233,7 @@ class SemesterData:
         plt.xticks(self.DATE_RANGE,rotation = 45)
         plt.text(self.DATE_LIST[-1],self.ACTIVE_LIST[-1]+6,self.ACTIVE_LIST[-1])
         plt.subplots_adjust(left=None, bottom=0.225, right=None, top=0.92, wspace=None, hspace=None)
+        return fig
     def comparison_graph(self,other,new_data):
         # other = SemesterData(other)
         self.new_data = new_data
@@ -259,24 +266,20 @@ class SemesterData:
         plt.xticks(self.DAY_RANGE,range(1,len(self.DAY_RANGE)+1))
         # plt.text(MAX_DATE_LIST[-1],MAX_DATE_LIST[-1]+6,MAX_DATE_LIST[-1])
         # plt.subplots_adjust(left=None, bottom=0.225, right=None, top=0.92, wspace=None, hspace=None)
-        
-
+     
 '''Create Graph 1: Accumulative Total of All Time'''
 def plot_all_data():
-    ACCUMULATIVE_GRAPH = plt.figure(dpi=100)
-
+    fig = plt.figure(dpi=100)
     # Read the 'All Time Data' file, dateList, activeList shouldn't change
     ACCUMULATIVE_RECOVERED_LIST = []
     ACCUMULATIVE_TOTAL_LIST = []
     newList = []
     newRecoveredList = []
-    
     ALL_TIME_DATA_FILE = open('ALL_TIME_DATA.txt','r')
     for alltimenum, ALL_TIME_LINE in enumerate(ALL_TIME_DATA_FILE):
         SPLIT_ALL_TIME_LINE = ALL_TIME_LINE.split('\t')
         ACCUMULATIVE_RECOVERED_LIST.append(int(SPLIT_ALL_TIME_LINE[2]))
         ACCUMULATIVE_TOTAL_LIST.append(int(SPLIT_ALL_TIME_LINE[3]))
-        
         # Calculate new cases
         if len(dateList) > 1 and alltimenum > 1:
             newList.append(ACCUMULATIVE_TOTAL_LIST[-1]-ACCUMULATIVE_TOTAL_LIST[-2])
@@ -285,7 +288,6 @@ def plot_all_data():
             newList.append(0)  
             newRecoveredList.append(0)
     ALL_TIME_DATA_FILE.close()
-    
     # Plot the graph
     plt.plot(dateList,activeList,'r',label='Active Cases')
     plt.plot(dateList,ACCUMULATIVE_RECOVERED_LIST,'g',label='Recovered Cases')
@@ -294,20 +296,21 @@ def plot_all_data():
     plt.plot(dateList,newRecoveredList,'y',label='New Recovered Cases')
     plt.plot(dateList[-1],activeList[-1],'ms',mfc='none',markersize=7)
     ## Add: line for when random testing started - Oct 26th, 2020
-    
     # Add legend, titles, labels
     plt.legend(loc = 2) # add location
     plt.title('Accumulative COVID Cases at Mount Union')
     plt.xlabel('Date')
     plt.ylabel('Number of Cases')
-    
     ## Add: Adjust x axis markers to show only last two digits of the year
     ## Add: Adjust dates that show beginning of each month or whatever, something consistent, just to make it nicer
     plt.xticks(ALL_TIME_DATE_RANGE,rotation = 45)
     plt.text(dateList[-1],activeList[-1]+6,activeList[-1])
     plt.subplots_adjust(left=None, bottom=0.225, right=None, top=0.92, wspace=None, hspace=None)
-
-label_text = ''
+    label_text = 'All Data Plotted'
+    create_label(label_text)
+    # attach_figure(ALL_DATA_GRAPH, frame)
+    label_text = 'All Data Plotted'
+    create_fig(fig)
 
 '''Graph 2: Fall 2020 Semester Only'''
 def plot_Fall20_data():
@@ -315,33 +318,37 @@ def plot_Fall20_data():
     FALL20.calculate_data()
     FALL20.calculate_new_data()
     FALL20.determine_range()
-    FALL20.graph_data()
+    fig = FALL20.graph_data()
     label_text = 'Fall 2020 Data Plotted'
-
+    create_label(label_text)
+    create_fig(fig)
+    
 '''Graph 3: Spring 2021 Semester Only'''
 def plot_Spring21_data(): 
     SPRING21 = SemesterData('SPRING21_DATA.txt','Spring 2021','2021-01-11','2021-05-05')
     SPRING21.calculate_data()
     SPRING21.calculate_new_data()
     SPRING21.determine_range()
-    SPRING21.graph_data()
+    fig = SPRING21.graph_data()
     label_text = 'Spring 2021 Data Plotted'
+    create_label(label_text)
+    create_fig(fig)
 
 '''Graph 4: Comparison Between Semesters''' '''Need to split up by week rather than exact date'''
 def plot_comparison_data(): 
-    COMPARISON_GRAPH = plt.figure(dpi=100)
+    fig = plt.figure(dpi=100)
     FALL20 = SemesterData('FALL20_DATA.txt','Fall 2020','2020-08-24','2020-11-24')
     FALL20.calculate_data()
     # FALL20.calculate_new_data()
     FALL20.comparison_graph(SemesterData('SPRING21_DATA.txt','Spring 2021','2021-01-11','2021-05-05'),False)
-    label_text = 'All Data Plotted'
+    label_text = 'Comparing Fall 2020 and Spring 2021 Data'
+    create_label(label_text)
+    create_fig(fig)
 
-plt.show()
 
-# This just prints the most recent data from the website into the console, formatted nicely
-activeSuffix = 's' if caseList[1] != 1 else ''
-recoveredSuffix = 's' if caseList[2] != 1 else ''
-print(f'On {caseList[0]}, there were {caseList[1]} active case{activeSuffix}, {caseList[2]} recovered case{recoveredSuffix}, and {caseList[3]} total cases.') #date,active,recovered,total
+# plt.show()
+
+
 
 HEIGHT = 600
 WIDTH = 800
@@ -356,7 +363,7 @@ title_label.place(relx=0.1,rely=0.01,relheight=0.1,relwidth=0.8)
 frame = tk.Frame(root,bg='#d88cf2',bd=5)
 frame.place(relx=0.025,rely=0.1,relheight=0.125,relwidth=0.95)
 
-get_data_button = tk.Button(frame,text='Check for \nNew Data',bd=5,font=('Bookman Old Style',10))
+get_data_button = tk.Button(frame,text='Check for \nNew Data',bd=5,font=('Bookman Old Style',10),command=check_for_data)
 get_data_button.place(relx=0.005,rely=0.05,relheight=0.9,relwidth=0.19)
 
 graph1_button = tk.Button(frame,text='Plot All Data',bd=5,font=('Bookman Old Style',10),command=plot_all_data)
@@ -371,13 +378,17 @@ graph3_button.place(relx=0.602,rely=0.05,relheight=0.9,relwidth=0.19)
 graph4_button = tk.Button(frame,text='Plot Semester \nComparison Data',bd=5,font=('Bookman Old Style',10),command=plot_comparison_data)
 graph4_button.place(relx=0.8025,rely=0.05,relheight=0.9,relwidth=0.19)
 
-display_label = tk.Label(root,relief='groove',bd=5,text="I'm going to put things like \'Fall 2020 data plotted\' or \'Latest data is: ____\' here") #,command = lambda: write_label
-display_label.place(relx=0.05,rely=0.25,relheight=0.06,relwidth=0.9)
+# This is currently creating new labels on top of each other; not very efficient. Make it replace the label instead
+def create_label(label_text=''):
+    display_label = tk.Label(root,relief='groove',bd=5,text=label_text) #,command = lambda: write_label
+    display_label.place(relx=0.05,rely=0.25,relheight=0.06,relwidth=0.9)
+create_label()
 
-# figure_window = FigureCanvasTkAgg()   
-# figure_window.draw() 
-# figure_window.get_tk_widget().pack() 
-
+def create_fig(fig):
+    plot_canvas = FigureCanvasTkAgg(fig,master=root)
+    plot_canvas.draw()
+    plot_canvas.get_tk_widget().place(relx=0.15,rely=0.35,relwidth=0.7,relheight=0.6)
+     
 root.mainloop()
 
 
