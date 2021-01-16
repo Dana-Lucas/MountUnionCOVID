@@ -96,8 +96,6 @@ def CreateMasterLists():
 
 dateList,activeList,recoveredList,totalList,ACCUMULATED_TOTAL,ACCUMULATED_RECOVERED,ALL_TIME_DATE_RANGE = CreateMasterLists()
 
-
-
 '''Check For New Data'''
 def check_for_data():
     '''
