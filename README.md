@@ -1,5 +1,6 @@
 # MountUnionCOVID
-A program that navigates to the Mount Union COVID page, extracts the  latest COVID data, appends the data to a txt file, and creates a graph  of all the data showing active, recovered, and total cases on campus.
+A program that navigates to the Mount Union COVID page, extracts the  latest COVID data, appends the data to a txt file, and creates graphs of all the data showing active, recovered, and total cases on campus.
 
-Upon running COVIDCases.py, the current data will be shown in the console and a plot will be created using the data in the text file COVIDCases.txt
-Current data will automatically be added to the txt file before creating the graph
+Upon running COVIDCases-OOP.py, a GUI window will appear and the user will be able to "check for new data" and update the COVIDCases.txt file, as well as display various plots showing COVID over all of time and individual semesters, or comparing semester data on top of each other. 
+
+The COVID_CASES.py version creates all the graphs at once, wihout using Object Oriented Programming (OOP) or GUI.
