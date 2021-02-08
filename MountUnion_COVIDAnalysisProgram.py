@@ -148,6 +148,8 @@ class SemesterData:
         
 '''Create Graph 1: Accumulative Total of All Time'''
 def plot_all_data():
+    ax.clear() # clear axes to redraw new plot lines
+    
     # fig = plt.figure(dpi=100)
     # Read the 'All Time Data' file, dateList, activeList shouldn't change
     ACCUMULATIVE_RECOVERED_LIST = []
