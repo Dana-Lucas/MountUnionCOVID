@@ -140,17 +140,17 @@ class SemesterData:
         ax.set_title('Fall 2020 vs Spring 2021 COVID Cases at Mount Union')
         ax.set_xlabel('Week in Semester')
         ax.set_ylabel('Number of Cases')
-        # ax.set_xticklabels(self.DAY_RANGE,range(1,len(self.DAY_RANGE)+1))
-        # plt.text(MAX_DATE_LIST[-1],MAX_DATE_LIST[-1]+6,MAX_DATE_LIST[-1])
-        # plt.subplots_adjust(left=None, bottom=0.225, right=None, top=0.92, wspace=None, hspace=None)
+        # ax.set_xticks(self.DAY_RANGE,range(1,len(self.DAY_RANGE)+1))
+        # ax.text(MAX_DATE_LIST[-1],MAX_DATE_LIST[-1]+6,MAX_DATE_LIST[-1])
+        # ax.subplots_adjust(left=None, bottom=0.225, right=None, top=0.92, wspace=None, hspace=None)
         
         plot_canvas.draw() # redraw canvas to put updates in affect
         
 '''Create Graph 1: Accumulative Total of All Time'''
 def plot_all_data():
+    
     ax.clear() # clear axes to redraw new plot lines
     
-    # fig = plt.figure(dpi=100)
     # Read the 'All Time Data' file, dateList, activeList shouldn't change
     ACCUMULATIVE_RECOVERED_LIST = []
     ACCUMULATIVE_TOTAL_LIST = []
@@ -185,7 +185,7 @@ def plot_all_data():
     ## Add: Adjust x axis markers to show only last two digits of the year
     ## Add: Adjust dates that show beginning of each month or whatever, something consistent, just to make it nicer
     # ax.set_xticks(ALL_TIME_DATE_RANGE,rotation = 45)
-    # ax.text(dateList[-1],activeList[-1]+(max(activeList)/5),activeList[-1])
+    ax.text(dateList[-1],activeList[-1]+(max(activeList)/5),activeList[-1])
     # ax.subplots_adjust(left=None, bottom=0.225, right=None, top=0.92, wspace=None, hspace=None)
 
 HEIGHT = 750
