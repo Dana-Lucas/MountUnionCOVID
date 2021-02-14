@@ -7,14 +7,15 @@ Created on Sat Jan 30 13:57:51 2021
 
 import bs4, requests
 import pandas as pd
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import re
-from datetime import datetime as dt
+# from datetime import datetime as dt
 from datetime import timedelta
 # import matplotlib.patches as mpatches
-import tkinter as tk
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,NavigationToolbar2Tk) 
-import numpy as np
+# import tkinter as tk
+# from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,NavigationToolbar2Tk) 
+# import numpy as np
+from pandas._libs.tslibs.timestamps import Timestamp
 
 
 def CreateMasterLists():
@@ -48,10 +49,12 @@ def CreateMasterLists():
     
     # Make x-axis range label names
     ALL_TIME_DATE = pd.to_datetime('2020-09-01',format='%Y/%m/%d')
-    ALL_TIME_DATE_RANGE = [ALL_TIME_DATE]
+    ALL_TIME_DATE_RANGE = [str(Timestamp(ALL_TIME_DATE).to_pydatetime()).split()[0]]
     while ALL_TIME_DATE < dateList[-1]:
         ALL_TIME_DATE += timedelta(weeks=5)
-        ALL_TIME_DATE_RANGE.append(ALL_TIME_DATE) 
+        ts = Timestamp(ALL_TIME_DATE).to_pydatetime() # convert from 'pandas._libs.tslibs.timestamps.Timestamp' to 'datetime'
+        ts = str(ALL_TIME_DATE).split()[0]
+        ALL_TIME_DATE_RANGE.append(ts)
         
     ALL_TIME_DATA_FILE = open('ALL_TIME_DATA.txt','wt')
     for num, DATE in enumerate(dateList):
@@ -153,6 +156,9 @@ def check_for_data():
     recoveredSuffix = 's' if caseList[2] != 1 else ''
     # print(f'On {caseList[0]}, there were {caseList[1]} active case{activeSuffix}, {caseList[2]} recovered case{recoveredSuffix}, and {caseList[3]} total cases.') #date,active,recovered,total
     label_text = f'On {caseList[0]}, there were {caseList[1]} active case{activeSuffix}, {caseList[2]} recovered case{recoveredSuffix}, and {caseList[3]} total cases.'
-    return label_text
+    
+    dateList,activeList,recoveredList,totalList,ACCUMULATED_TOTAL,ACCUMULATED_RECOVERED,ALL_TIME_DATE_RANGE = CreateMasterLists()
+    
+    return label_text,dateList,activeList,recoveredList,totalList,ACCUMULATED_TOTAL,ACCUMULATED_RECOVERED,ALL_TIME_DATE_RANGE
 
 
