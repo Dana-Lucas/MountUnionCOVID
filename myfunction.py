@@ -7,16 +7,9 @@ Created on Sat Jan 30 13:57:51 2021
 
 import bs4, requests
 import pandas as pd
-# import matplotlib.pyplot as plt
 import re
-# from datetime import datetime as dt
 from datetime import timedelta
-# import matplotlib.patches as mpatches
-# import tkinter as tk
-# from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,NavigationToolbar2Tk) 
-# import numpy as np
 from pandas._libs.tslibs.timestamps import Timestamp
-
 
 def CreateMasterLists():
     '''
