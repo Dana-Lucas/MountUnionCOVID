@@ -9,20 +9,15 @@ A program that navigates to the Mount Union COVID page, extracts the
 latest COVID data, appends the data to a txt file, and creates a graph 
 of all the data showing active, recovered, and total cases on campus.
 
+Must use myfunction.py package import
 """
 
-# import bs4, requests
 import pandas as pd
-# import matplotlib.pyplot as plt
-# import re
-import datetime as dt
 from datetime import datetime as dt
 from datetime import timedelta
-# import matplotlib.patches as mpatches
+import matplotlib.patches as mpatches
 import tkinter as tk
-from tkinter import *
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,NavigationToolbar2Tk) 
-# import numpy as np
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import myfunction
 from matplotlib.figure import Figure
 from pandas._libs.tslibs.timestamps import Timestamp
@@ -107,8 +102,6 @@ class SemesterData:
         ax.set_xticks(self.DATE_RANGE)
         ax.set_xticklabels(self.DATE_RANGE,rotation=45)
         ax.text(self.DATE_LIST[-1],self.ACTIVE_LIST[-1]+(max(self.ACTIVE_LIST)/5),self.ACTIVE_LIST[-1])
-
-        # fig.subplots_adjust(left=None, bottom=0.225, right=None, top=0.92, wspace=None, hspace=None)    
         plot_canvas.draw() # redraw canvas to put updates in affect
 
     def comparison_graph(self,other,new_data):
@@ -119,30 +112,28 @@ class SemesterData:
         other.calculate_data()
         if self.new_data == True: # similar to try-except, prevents errors if new_data not in correct format
             other.calculate_new_data()
-            
         ax.clear() # clear axes to redraw new plot lines
-        
-        ax.plot(self.DAY_LIST,self.ACTIVE_LIST,'r--',label='Fall 2020 Active Cases')
-        ax.plot(self.DAY_LIST,self.RECOVERED_LIST,'g--',label='Fall 2020 Recovered Cases')
-        ax.plot(self.DAY_LIST,self.TOTAL_LIST,'b--',label='Fall 2020 Total Cases')
+        ax.plot(self.DAY_LIST,self.ACTIVE_LIST,'r--')
+        ax.plot(self.DAY_LIST,self.RECOVERED_LIST,'g--')
+        ax.plot(self.DAY_LIST,self.TOTAL_LIST,'b--')
         try:
-            ax.plot(self.DAY_LIST,self.NEW_LIST,'m--',label='Fall 2020 New Active Cases')
-            ax.plot(self.DAY_LIST,self.NEW_RECOVERED_LIST,'y--',label='Fall 2020 New Recovered Cases')
+            ax.plot(self.DAY_LIST,self.NEW_LIST,'m--')
+            ax.plot(self.DAY_LIST,self.NEW_RECOVERED_LIST,'y--')
         except:
             pass
-        ax.plot(other.DAY_LIST,other.ACTIVE_LIST,'r',label='Spring 2021 Active Cases')
-        ax.plot(other.DAY_LIST,other.RECOVERED_LIST,'g',label='Spring 2021 Recovered Cases')
-        ax.plot(other.DAY_LIST,other.TOTAL_LIST,'b',label='Spring 2021 Total Cases')
+        ax.plot(other.DAY_LIST,other.ACTIVE_LIST,'r')
+        ax.plot(other.DAY_LIST,other.RECOVERED_LIST,'g')
+        ax.plot(other.DAY_LIST,other.TOTAL_LIST,'b')
         try:
-            ax.plot(other.DAY_LIST,other.NEW_LIST,'m',label='Spring 2021 New Active Cases')
-            ax.plot(other.DAY_LIST,other.NEW_RECOVERED_LIST,'y',label='Spring 2021 New Recovered Cases')
+            ax.plot(other.DAY_LIST,other.NEW_LIST,'m')
+            ax.plot(other.DAY_LIST,other.NEW_RECOVERED_LIST,'y')
         except:
             pass
         
         self.DAY_RANGE = range(1,(max(self.DAY_LIST[-1],other.DAY_LIST[-1])//7+1)*7,7)
         # Add legend, titles, labels
-        ax.legend()
-        # plt.legend(handles = [mpatches.Patch(color='red',label = 'Active Cases'),mpatches.Patch(color='green',label = 'Recovered Cases'),mpatches.Patch(color='blue',label = 'Total Cases')]) # add location
+        # ax.legend()
+        ax.legend(handles = [mpatches.Patch(color='red',label = 'Active Cases'),mpatches.Patch(color='green',label = 'Recovered Cases'),mpatches.Patch(color='blue',label = 'Total Cases'),mpatches.Patch(color='black',label = 'Fall 2020',ls='--',fill=False),mpatches.Patch(color='black',label = 'Spring 2021',fill=False)]) # add location
         ax.set_title('Fall 2020 vs Spring 2021 COVID Cases at Mount Union')
         ax.set_xlabel('Week in Semester')
         ax.set_ylabel('Number of Cases')
@@ -195,8 +186,7 @@ class SemesterData:
         ## Add: Adjust dates that show beginning of each month or whatever, something consistent, just to make it nicer
         ax.set_xticks(ALL_TIME_DATE_RANGE)
         ax.set_xticklabels(ALL_TIME_DATE_RANGE,rotation = 45)
-        ax.text(self.DATE_LIST[-1],self.ACTIVE_LIST[-1]+(max(self.ACTIVE_LIST)/5),self.ACTIVE_LIST[-1])
-        # fig.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=None, hspace=None)    
+        ax.text(self.DATE_LIST[-1],self.ACTIVE_LIST[-1]+(max(self.ACTIVE_LIST)/5),self.ACTIVE_LIST[-1]) 
         plot_canvas.draw()
         # ax.subplots_adjust(left=None, bottom=0.225, right=None, top=0.92, wspace=None, hspace=None)
 
@@ -228,8 +218,8 @@ plot_canvas = FigureCanvasTkAgg(fig,master=root)
 plot_canvas.get_tk_widget().place(relx=0.15,rely=0.35,relwidth=0.7,relheight=0.6)
 # plot_canvas.get_tk_widget().place(relx=0.15,rely=0.4,relwidth=0.7,relheight=0.6)
 
-label_text=StringVar() # Defaults to empty string label
-label = Label(root,relief='groove',bd=5,textvariable = label_text) 
+label_text=tk.StringVar() # Defaults to empty string label
+label = tk.Label(root,relief='groove',bd=5,textvariable = label_text) 
 label.place(relx=0.05,rely=0.25,relheight=0.06,relwidth=0.9)
 
 def get_data_button_command():
