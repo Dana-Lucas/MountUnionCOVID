@@ -21,7 +21,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import myfunction
 from matplotlib.figure import Figure
 from pandas._libs.tslibs.timestamps import Timestamp
- 
+
 dateList,activeList,recoveredList,totalList,ACCUMULATED_TOTAL,ACCUMULATED_RECOVERED,ALL_TIME_DATE_RANGE = myfunction.CreateMasterLists()
 
 class SemesterData: 
