@@ -186,7 +186,6 @@ class SemesterData:
         ## Add: Adjust dates that show beginning of each month or whatever, something consistent, just to make it nicer
         ax.set_xticks(ALL_TIME_DATE_RANGE)
         ax.set_xticklabels(ALL_TIME_DATE_RANGE,rotation = 45)
-        print(type(ALL_TIME_DATE_RANGE))
         ax.text(self.DATE_LIST[-1],self.ACTIVE_LIST[-1]+(max(self.ACTIVE_LIST)/5),self.ACTIVE_LIST[-1]) 
         plot_canvas.draw()
         # ax.subplots_adjust(left=None, bottom=0.225, right=None, top=0.92, wspace=None, hspace=None)
@@ -216,7 +215,6 @@ class SemesterData:
             self.NEW_POSITVE_ASYMPTOMATIC_BY_WEEK.append(APOS-self.POSITVE_ASYMPTOMATIC_ACCUMULATIVE[APOSval-1])
         for ADATEval, ADATE in enumerate(self.DATE_ASYMPTOMATIC):
             for DATEval, DATE in enumerate(self.DATE_LIST):
-                # print(DATE)
                 if DATE <= ADATE and DATE > ADATE - timedelta(days=7):
                     ACTIVEPERWEEK += self.NEW_LIST[DATEval]
             self.ACTIVE_BY_WEEK.append(ACTIVEPERWEEK)
@@ -311,23 +309,28 @@ def graph5_button_command():
     showtext = 'Showing Correlation Between Asymptomatic Testing and Active Cases Each Week'
     label_text.set(showtext)
     
+
+num_buttons = 6
+spacing_between_buttons = 0.005
+length_of_buttons = (1-((num_buttons+1)*spacing_between_buttons))/num_buttons
+
 get_data_button = tk.Button(frame,text='Check for \nNew Data',bd=5,font=('Bookman Old Style',10),command=get_data_button_command)
-get_data_button.place(relx=0.005,rely=0.05,relheight=0.9,relwidth=0.19)
+get_data_button.place(relx=spacing_between_buttons,rely=0.05,relheight=0.9,relwidth=length_of_buttons)
 
 graph1_button = tk.Button(frame,text='Plot All Data',bd=5,font=('Bookman Old Style',10),command=graph1_button_command)
-graph1_button.place(relx=0.201,rely=0.05,relheight=0.9,relwidth=0.19)
+graph1_button.place(relx=(spacing_between_buttons*2+length_of_buttons*1),rely=0.05,relheight=0.9,relwidth=length_of_buttons)
 
 graph2_button = tk.Button(frame,text='Plot Fall 2020 \nData',bd=5,font=('Bookman Old Style',10),command=graph2_button_command)
-graph2_button.place(relx=0.4015,rely=0.05,relheight=0.9,relwidth=0.19)
+graph2_button.place(relx=(spacing_between_buttons*3+length_of_buttons*2),rely=0.05,relheight=0.9,relwidth=length_of_buttons)
 
 graph3_button = tk.Button(frame,text='Plot Spring 2021 \nData',bd=5,font=('Bookman Old Style',10),command=graph3_button_command)
-graph3_button.place(relx=0.602,rely=0.05,relheight=0.9,relwidth=0.19)
+graph3_button.place(relx=(spacing_between_buttons*4+length_of_buttons*3),rely=0.05,relheight=0.9,relwidth=length_of_buttons)
 
 graph4_button = tk.Button(frame,text='Plot Semester \nComparison Data',bd=5,font=('Bookman Old Style',10),command=graph4_button_command)
-graph4_button.place(relx=0.8025,rely=0.05,relheight=0.9,relwidth=0.19)
+graph4_button.place(relx=(spacing_between_buttons*5+length_of_buttons*4),rely=0.05,relheight=0.9,relwidth=length_of_buttons)
 
 graph5_button = tk.Button(frame,text='Plot Spring 2021 \nAsymptomatic Data',bd=5,font=('Bookman Old Style',10),command=graph5_button_command)
-graph5_button.place(relx=0.8025,rely=0.50,relheight=0.9,relwidth=0.19)
+graph5_button.place(relx=(spacing_between_buttons*6+length_of_buttons*5),rely=0.05,relheight=0.9,relwidth=length_of_buttons)
 
 root.mainloop()
 
