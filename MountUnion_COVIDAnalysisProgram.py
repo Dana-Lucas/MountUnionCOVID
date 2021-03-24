@@ -186,10 +186,62 @@ class SemesterData:
         ## Add: Adjust dates that show beginning of each month or whatever, something consistent, just to make it nicer
         ax.set_xticks(ALL_TIME_DATE_RANGE)
         ax.set_xticklabels(ALL_TIME_DATE_RANGE,rotation = 45)
+        print(type(ALL_TIME_DATE_RANGE))
         ax.text(self.DATE_LIST[-1],self.ACTIVE_LIST[-1]+(max(self.ACTIVE_LIST)/5),self.ACTIVE_LIST[-1]) 
         plot_canvas.draw()
         # ax.subplots_adjust(left=None, bottom=0.225, right=None, top=0.92, wspace=None, hspace=None)
 
+    def plot_asymptomatic_graph(self):
+        self.calculate_data()
+        self.calculate_new_data()
+        self.ASYMTOMATIC_FILE = open('AsymptomaticTesting.txt','r')
+        self.DATE_ASYMPTOMATIC = []
+        self.POSITVE_ASYMPTOMATIC_ACCUMULATIVE = []
+        self.TOTAL_ASYMPTOMATIC_ACCUMULATIVE = []
+        self.DATE_NEW_ASYMPTOMATIC = []
+        self.NEW_POSITVE_ASYMPTOMATIC_BY_WEEK = []
+        self.ACTIVE_BY_WEEK = []
+        CUT_DATE_ASYMPTOMATIC = []
+        ACTIVEPERWEEK = 0
+        for num, LINE in enumerate(self.ASYMTOMATIC_FILE):
+            SPLIT_LINE = LINE.split('\t')
+            if SPLIT_LINE[0] == 'Date':
+                continue
+            else:
+                self.DATE_ASYMPTOMATIC.append(dt.strptime(SPLIT_LINE[0].split(' ')[0],"%m/%d/%Y"))
+                self.POSITVE_ASYMPTOMATIC_ACCUMULATIVE.append(int(SPLIT_LINE[1]))
+                self.TOTAL_ASYMPTOMATIC_ACCUMULATIVE.append(int(SPLIT_LINE[2]))
+        self.DATA_FILE.close()
+        for APOSval, APOS in enumerate(self.POSITVE_ASYMPTOMATIC_ACCUMULATIVE):
+            self.NEW_POSITVE_ASYMPTOMATIC_BY_WEEK.append(APOS-self.POSITVE_ASYMPTOMATIC_ACCUMULATIVE[APOSval-1])
+        for ADATEval, ADATE in enumerate(self.DATE_ASYMPTOMATIC):
+            for DATEval, DATE in enumerate(self.DATE_LIST):
+                # print(DATE)
+                if DATE <= ADATE and DATE > ADATE - timedelta(days=7):
+                    ACTIVEPERWEEK += self.NEW_LIST[DATEval]
+            self.ACTIVE_BY_WEEK.append(ACTIVEPERWEEK)
+            ACTIVEPERWEEK = 0
+            
+        # remove first value of list because this encompasses all before asymptomatic testing began
+        self.NEW_POSITVE_ASYMPTOMATIC_BY_WEEK = self.NEW_POSITVE_ASYMPTOMATIC_BY_WEEK[1:]
+        self.ACTIVE_BY_WEEK = self.ACTIVE_BY_WEEK[1:]
+        self.DATE_ASYMPTOMATIC = self.DATE_ASYMPTOMATIC[1:]
+        
+        for IHATETHISDATE in self.DATE_ASYMPTOMATIC:
+            CUT_DATE_ASYMPTOMATIC.append(dt.date(IHATETHISDATE))
+
+        ax.clear()
+        ax.plot(self.DATE_ASYMPTOMATIC,self.NEW_POSITVE_ASYMPTOMATIC_BY_WEEK,'m',label='Positive Asymptomatic Tests')
+        ax.plot(self.DATE_ASYMPTOMATIC,self.ACTIVE_BY_WEEK,'r',label='Active Cases')
+        # Add legend, titles, labels
+        ax.legend(loc = 1) # add location
+        ax.set_title('Asymptomatic and Active COVID Cases at Mount Union')
+        ax.set_xlabel('Date')
+        ax.set_ylabel('Number of Cases')
+        ax.set_xticks(CUT_DATE_ASYMPTOMATIC)
+        ax.set_xticklabels(CUT_DATE_ASYMPTOMATIC,rotation=45)
+        plot_canvas.draw()
+        
 HEIGHT = 750
 WIDTH = 900
 root = tk.Tk()
@@ -253,6 +305,12 @@ def graph4_button_command():
     showtext = 'Comparing Fall 2020 and Spring 2021 Data'
     label_text.set(showtext) # update label text
     
+def graph5_button_command():
+    SPRING21 = SemesterData('SPRING21_DATA.txt','Spring 2021','2021-01-11','2021-05-05')
+    SPRING21.plot_asymptomatic_graph()
+    showtext = 'Showing Correlation Between Asymptomatic Testing and Active Cases Each Week'
+    label_text.set(showtext)
+    
 get_data_button = tk.Button(frame,text='Check for \nNew Data',bd=5,font=('Bookman Old Style',10),command=get_data_button_command)
 get_data_button.place(relx=0.005,rely=0.05,relheight=0.9,relwidth=0.19)
 
@@ -267,6 +325,9 @@ graph3_button.place(relx=0.602,rely=0.05,relheight=0.9,relwidth=0.19)
 
 graph4_button = tk.Button(frame,text='Plot Semester \nComparison Data',bd=5,font=('Bookman Old Style',10),command=graph4_button_command)
 graph4_button.place(relx=0.8025,rely=0.05,relheight=0.9,relwidth=0.19)
+
+graph5_button = tk.Button(frame,text='Plot Spring 2021 \nAsymptomatic Data',bd=5,font=('Bookman Old Style',10),command=graph5_button_command)
+graph5_button.place(relx=0.8025,rely=0.50,relheight=0.9,relwidth=0.19)
 
 root.mainloop()
 

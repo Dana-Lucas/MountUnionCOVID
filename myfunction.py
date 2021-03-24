@@ -147,8 +147,10 @@ def check_for_data():
     # This just prints the most recent data from the website into the console, formatted nicely
     activeSuffix = 's' if caseList[1] != 1 else ''
     recoveredSuffix = 's' if caseList[2] != 1 else ''
+    werewas = 'was' if caseList[2] != 1 else 'were'
+    
     # print(f'On {caseList[0]}, there were {caseList[1]} active case{activeSuffix}, {caseList[2]} recovered case{recoveredSuffix}, and {caseList[3]} total cases.') #date,active,recovered,total
-    label_text = f'On {caseList[0]}, there were {caseList[1]} active case{activeSuffix}, {caseList[2]} recovered case{recoveredSuffix}, and {caseList[3]} total cases.'
+    label_text = f'On {caseList[0]}, there {werewas} {caseList[1]} active case{activeSuffix}, {caseList[2]} recovered case{recoveredSuffix}, and {caseList[3]} total cases.'
     
     dateList,activeList,recoveredList,totalList,ACCUMULATED_TOTAL,ACCUMULATED_RECOVERED,ALL_TIME_DATE_RANGE = CreateMasterLists()
     
