@@ -162,19 +162,19 @@ class SemesterData:
             self.ACCUMULATIVE_RECOVERED_LIST.append(int(SPLIT_ALL_TIME_LINE[2]))
             self.ACCUMULATIVE_TOTAL_LIST.append(int(SPLIT_ALL_TIME_LINE[3]))
             # Calculate new cases
-            if len(self.DATE_LIST) > 1 and alltimenum > 1:
-                self.newList.append(self.ACCUMULATIVE_TOTAL_LIST[-1]-self.ACCUMULATIVE_TOTAL_LIST[-2])
-                self.newRecoveredList.append(self.ACCUMULATIVE_RECOVERED_LIST[-1]-self.ACCUMULATIVE_RECOVERED_LIST[-2])
-            else: # To ensure the lists have the same length for plotting
-                self.newList.append(0)  
-                self.newRecoveredList.append(0)
+            # if len(self.DATE_LIST) > 1 and alltimenum > 1:
+            #     self.newList.append(self.ACCUMULATIVE_TOTAL_LIST[-1]-self.ACCUMULATIVE_TOTAL_LIST[-2])
+            #     self.newRecoveredList.append(self.ACCUMULATIVE_RECOVERED_LIST[-1]-self.ACCUMULATIVE_RECOVERED_LIST[-2])
+            # else: # To ensure the lists have the same length for plotting
+            #     self.newList.append(0)  
+            #     self.newRecoveredList.append(0)
         ALL_TIME_DATA_FILE.close()
         # Plot the graph
         ax.plot(self.DATE_LIST,self.ACTIVE_LIST,'r',label='Active Cases')
         ax.plot(self.DATE_LIST,self.ACCUMULATIVE_RECOVERED_LIST,'g',label='Recovered Cases')
         ax.plot(self.DATE_LIST,self.ACCUMULATIVE_TOTAL_LIST,'b',label='Total Cases')
-        ax.plot(self.DATE_LIST,self.newList,'m',label='New Active Cases')
-        ax.plot(self.DATE_LIST,self.newRecoveredList,'y',label='New Recovered Cases')
+        # ax.plot(self.DATE_LIST,self.newList,'m',label='New Active Cases')
+        # ax.plot(self.DATE_LIST,self.newRecoveredList,'y',label='New Recovered Cases')
         ax.plot(self.DATE_LIST[-1],self.ACTIVE_LIST[-1],'ms',mfc='none',markersize=7)
         ## Add: line for when random testing started - Oct 26th, 2020
         # Add legend, titles, labels
@@ -308,7 +308,6 @@ def graph5_button_command():
     SPRING21.plot_asymptomatic_graph()
     showtext = 'Showing Correlation Between Asymptomatic Testing and Active Cases Each Week'
     label_text.set(showtext)
-    
 
 num_buttons = 6
 spacing_between_buttons = 0.005
